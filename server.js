@@ -3,7 +3,7 @@ import * as Basic from "./modules/functions_basic.js";
 import * as Movie from "./modules/functions_movies.js";
 
 const app = express();
-const port = process.env["PORT"] ? process.env["PORT"] : 3000;
+const port = process.env["PORT"] ? process.env["PORT"] : 5500;
 
 app.get("/api/searchByName", async (req, res) => {
     if(!req.query.title) return res.status(404).end("Title is void.");
@@ -25,5 +25,5 @@ app.get("/api/getMoviesByGenre", async (req, res) => {
     res.status(200).json(await Movie.getMoviesByGenre(req.query.genre, req.query.page));
 });
 
-app.use(express.static("public"))
+// app.use(express.static("public"))
 app.listen(port, () => console.log("El servidor está activo en el puerto " + port));

@@ -1,4 +1,19 @@
 {
+        // Live Sass Compile.
+        "liveSassCompile.settings.showOutputWindowOn": "None",
+        "liveSassCompile.settings.generateMap": false,
+        "liveSassCompile.settings.formats":[
+    
+            {
+                "format": "compressed",
+                "extensionName": ".min.css",
+                "savePath": "~/../styles"
+            },
+        ],
+        "liveSassCompile.settings.excludeList": [
+            "/**/node_modules/**",
+            "/.vscode/**"
+        ],
     "appService.deploySubpath": ".",
     "appService.defaultWebAppToDeploy": "/subscriptions/98824a0c-0246-4e45-ae09-8736f5768e79/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/minimal-pelisplus-app"
 }
