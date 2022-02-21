@@ -14,17 +14,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const fetchData_1 = require("./modules/fetchData");
-const app = express_1.default();
+const app = (0, express_1.default)();
 const port = 3000;
 app.get("/Search/:query", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log(req.query);
-    let response = yield fetchData_1.newSearch(req.params.query);
+    let response = yield (0, fetchData_1.newSearch)(req.params.query);
     res.status(200).json(response);
 }));
 app.get("/search", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.query.title)
         return res.status(404).end("Title is void.");
-    const data_json = yield fetchData_1.newSearch(String(req.query.title));
+    const data_json = yield (0, fetchData_1.newSearch)(String(req.query.title));
     res.status(200).json(data_json);
 }));
 app.get("/", (req, res) => { console.log(req); });

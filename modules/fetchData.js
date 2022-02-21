@@ -24,7 +24,7 @@ const URL_BASE = "https://pelisplushd.net";
 function extraContent(id) {
     return __awaiter(this, void 0, void 0, function* () {
         const page_fetch = yield axios_1.default.get(URL_BASE + "/" + id);
-        const $ = cheerio_1.load(yield page_fetch.data);
+        const $ = (0, cheerio_1.load)(yield page_fetch.data);
         const tempPromises = [];
         const promises = [];
         const seasons = $('body div ul.TbVideoNv li.presentation').length;
@@ -93,7 +93,7 @@ function extraContent(id) {
 function newSearch(title) {
     return __awaiter(this, void 0, void 0, function* () {
         const page_fetch = yield axios_1.default.get(URL_BASE + "/search/?s=" + title);
-        const $ = cheerio_1.load(yield page_fetch.data);
+        const $ = (0, cheerio_1.load)(yield page_fetch.data);
         // const union: (ISeries | IMovies)[] = [];
         // const union = [];
         const promise_array = $("body div#default-tab-1 div.Posters a").map((index, element) => {
@@ -104,7 +104,7 @@ function newSearch(title) {
                         "id": actual_element.attr("href").replace(BASE_URL, '').trim() || null,
                         "title": actual_element.find('div.listing-content p').text().trim() || null,
                         "poster": actual_element.find('img').attr('src') || null,
-                        "type": actual_element.find("div.centrado").text().trim() || null
+                        "type": actual_element.find("div.centrado").text().trim()
                     };
                     resolve(actual_data_json);
                 });
@@ -117,7 +117,7 @@ exports.newSearch = newSearch;
 const search = (query) => __awaiter(void 0, void 0, void 0, function* () {
     const res = yield axios_1.default.get(`${BASE_URL}search/?s=${query}`);
     const body = yield res.data;
-    const $ = cheerio_1.load(body);
+    const $ = (0, cheerio_1.load)(body);
     const union = [];
     const promise = $('body div#default-tab-1 div.Posters a').map((index, element) => new Promise((resolve) => __awaiter(void 0, void 0, void 0, function* () {
         const $element = $(element);
@@ -416,7 +416,7 @@ exports.search = search;
 const contentHandler = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const res = yield axios_1.default.get(`${BASE_URL}${id}`);
     const body = yield res.data;
-    const $ = cheerio_1.load(body);
+    const $ = (0, cheerio_1.load)(body);
     const tempPromises = [];
     const promises = [];
     const seasons = $('body div ul.TbVideoNv li.presentation').length;
