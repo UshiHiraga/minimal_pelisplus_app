@@ -1,4 +1,5 @@
-const MAIN_SERVER = "http://localhost:5500";
+// const MAIN_SERVER = "http://localhost:5500";
+const MAIN_SERVER = "";
 
 async function searchAndDisplay(){
     const title_search = document.getElementById("title_movie_search").value.trim();
