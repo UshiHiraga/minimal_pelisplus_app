@@ -25,5 +25,5 @@ app.get("/api/getMoviesByGenre", async (req, res) => {
     res.status(200).json(await Movie.getMoviesByGenre(req.query.genre, req.query.page));
 });
 
-// app.use(express.static("public"))
+app.use(express.static("public"))
 app.listen(port, () => console.log("El servidor está activo en el puerto " + port));

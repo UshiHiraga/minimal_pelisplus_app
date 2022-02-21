@@ -1,16 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Esto es una prueba.</title>
-    <script src="/index.js" defer></script>
+    <script src="./index.js" defer></script>
+    <link rel="stylesheet" href="./styles/page_index.min.css">
+    <title>Minimal Pelisplushd</title>
 </head>
 <body>
 
-    <h1>Hola, esto es una prueba</h1>
-    <h1>Ahora estamos conectados a Github.</h1>
-    
+    <section class="big_header">
+        <label for="title_movie_search">Buscar película por nombre:</label>
+        <input name="title" type="text" id="title_movie_search">
+        <button id="searchMoviesByName"type="submit">Enviar</button>
+    </section>
+
+    <section id="card_container" class="big_content">
+    </section>
+
+
 </body>
 </html>
