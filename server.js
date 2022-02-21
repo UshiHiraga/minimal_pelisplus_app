@@ -3,7 +3,7 @@ import * as Basic from "./modules/functions_basic.js";
 import * as Movie from "./modules/functions_movies.js";
 
 const app = express();
-const port = 3000;
+const port = process.env["PORT"];
 
 app.get("/api/searchByName", async (req, res) => {
     if(!req.query.title) return res.status(404).end("Title is void.");
