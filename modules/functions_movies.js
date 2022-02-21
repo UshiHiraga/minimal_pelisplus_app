@@ -21,3 +21,33 @@ export async function getMovieServers(id){
     };
     return serverNames;
 };
+
+export async function getLatestReleasesMovies(page = 1){
+    const page_fetch = await axios(url_base + "/peliculas/estrenos?page=" + page);
+    const $ = load(await page_fetch.data);    
+    const data_array = $("body div#default-tab-1 div.Posters a").map((index, element) => {
+        const actual_element = $(element);
+        return {
+            "id": actual_element.attr("href").replace(url_base, "").trim(),
+            "title": actual_element.find("div.listing-content p").text().trim(),
+            "poster": actual_element.find("img").attr("src"),
+            "type": actual_element.find("div.centrado").text().trim()
+        };
+    });
+    return data_array.toArray();
+};
+
+export async function getMoviesByGenre(genre, page = 1){
+    const page_fetch = await axios(url_base + "/generos/" + genre +"/peliculas?page=" + page);
+    const $ = load(await page_fetch.data);    
+    const data_array = $("body div#default-tab-1 div.Posters a").map((index, element) => {
+        const actual_element = $(element);
+        return {
+            "id": actual_element.attr("href").replace(url_base, "").trim(),
+            "title": actual_element.find("div.listing-content p").text().trim(),
+            "poster": actual_element.find("img").attr("src"),
+            "type": actual_element.find("div.centrado").text().trim()
+        };
+    });
+    return data_array.toArray();
+}

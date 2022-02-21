@@ -80,35 +80,6 @@ import {url_base} from "./base_url.js";
 // };
 
 
-// export const getMovieServers = async(id) =>{
-//   const res = await axios.get(`${BASE_URL}${id}`);
-//   const body = await res.data;
-//   const $ = load(body);
-//   const scripts = $('script');
-//   const servers = [];
-//   const serverNames = [];
-
-//   $('div.app div.layout ul.TbVideoNv li').each((index , element) =>{
-//     const $element = $(element);
-//     const name = $element.find('a').text().trim();
-//     serverNames.push(name);
-//   })
-  
-//   Array.from({length: scripts.length} , (v , k) =>{
-//     const $script = $(scripts[k]);
-//     const contents = $script.html();
-
-//     if((contents || '').includes('var video = ')) {
-//       let allScript = contents.split('video =  ');
-//       allScript.map(x =>{
-//         let tempUrlList = urlify(x);
-//         let urlListFixed = tempUrlList.map(x =>{
-//           return x.replace(/[;"]/g , '');
-//         });
-//         servers.push(urlListFixed);
-//       });
-//     }
-//   });
 
 
 // export const seriesByGenres = async(genre: string, page: number): Promise<CheerioElement[]> =>{
@@ -320,78 +291,7 @@ import {url_base} from "./base_url.js";
 //   return Promise.all(promise.toArray());
 // };
 
-// export const getLatestReleasesMovies = async(page: number): Promise<CheerioElement[]> =>{
-//   const res = await axios.get(`${BASE_URL}peliculas/estrenos/${page}`);
-//   const body = await res.data;
-//   const $ = load(body);
-//   const promises: IMovies[] = [];  
 
-//   const promise = $('body div#default-tab-1 div.Posters a').map((index , element) => new Promise(async(resolve) =>{
-//     const $element = $(element);
-//     const id = $element.attr('href').replace(BASE_URL, '').trim();
-//     const title = $element.find('div.listing-content p').text().trim();
-//     const poster = $element.find('img').attr('src');
-//     const extra = await contentHandler(id);
-//     promises.push({
-//       id: id || null,
-//       title: title || null,
-//       poster: poster || null,
-//       year: extra.promises[0].year || null,
-//       genres: extra.promises[0].genres || null,
-//       rating: extra.promises[0].rating || null,
-//       synopsis: extra.promises[0].synopsis || null,
-//       authors: extra.promises[0].authors || null,
-//       director: extra.promises[0].director || null,
-//       writers: extra.promises[0].writers || null,
-//       country: extra.promises[0].country || null,
-//       releaseDate: extra.promises[0].releaseDate || null,
-//       promo: extra.promises[0].promo || null
-//     });
-//     resolve(promises);
-//   }));
-
-//   return Promise.all(promise.toArray());
-// };
-
-// export const getAllMovies = async(page: number): Promise<CheerioElement[]> =>{
-//   const res = await axios.get(`${BASE_URL}peliculas/${page}`);
-//   const body = await res.data;
-//   const $ = load(body);
-//   const promises: IMovies[] = [];  
-
-//   //const actual = page;
-//   //const lastPage = parseInt($('body div.app div.layout ul.pagination li').eq(4).find('a').attr('href').match(/\d/g).join("") , 10);
-//   //const pagination = {
-//   //  actual: actual,
-//   //  last: lastPage
-//   //}
-
-//   const promise = $('body div#default-tab-1 div.Posters a').map((index , element) => new Promise(async(resolve) =>{
-//     const $element = $(element);
-//     const id = $element.attr('href').replace(BASE_URL, '').trim();
-//     const title = $element.find('div.listing-content p').text().trim();
-//     const poster = $element.find('img').attr('src');
-//     const extra = await contentHandler(id);
-//     promises.push({
-//       id: id || null,
-//       title: title || null,
-//       poster: poster || null,
-//       year: extra.promises[0].year || null,
-//       genres: extra.promises[0].genres || null,
-//       rating: extra.promises[0].rating || null,
-//       synopsis: extra.promises[0].synopsis || null,
-//       authors: extra.promises[0].authors || null,
-//       director: extra.promises[0].director || null,
-//       writers: extra.promises[0].writers || null,
-//       country: extra.promises[0].country || null,
-//       releaseDate: extra.promises[0].releaseDate || null,
-//       promo: extra.promises[0].promo || null
-//     });
-//     resolve(promises);
-//   }));
-
-//   return Promise.all(promise.toArray());
-// };
 
 // const episodeContentHanlder = async(id: string) =>{
 //   const res = await axios.get(`${BASE_URL}${id}`);
