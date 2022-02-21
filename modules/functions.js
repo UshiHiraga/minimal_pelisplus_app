@@ -1,14 +1,7 @@
-import {load} from 'cheerio';
-import axios from 'axios';
-// import { ISeries } from '../interfaces/series_interface';
-// import { IMovies } from '../interfaces/movies_interface';
-// import { IServers } from './interfaces/IServers';
-// import { ISerieServerRootObj } from './interfaces/ISerieServerRootObj';
-// import { urlify, sleep} from './utils/index';
-// import { BASE_URL} from './url/index';
+import axios from "axios";
+import {load} from "cheerio";
+import {url_base} from "./base_url.js";
 
-const BASE_URL = "https://pelisplushd.net/";
-const URL_BASE = "https://pelisplushd.net";
 
 // async function extraContent(id: string) {
 //     const page_fetch = await axios.get(URL_BASE + "/" + id);
@@ -87,27 +80,35 @@ const URL_BASE = "https://pelisplushd.net";
 // };
 
 
-export async function newSearch(title) {
-    const page_fetch = await axios.get(URL_BASE + "/search/?s=" + title);
-    const $ = load(await page_fetch.data);
+// export const getMovieServers = async(id) =>{
+//   const res = await axios.get(`${BASE_URL}${id}`);
+//   const body = await res.data;
+//   const $ = load(body);
+//   const scripts = $('script');
+//   const servers = [];
+//   const serverNames = [];
 
-    const promise_array = $("body div#default-tab-1 div.Posters a").map((index, element) => {
-        return new Promise(async function(resolve, reject){
-            const actual_element = $(element);
-            const actual_data_json = {
-                "id": actual_element.attr("href").replace(BASE_URL, '').trim(),
-                "title": actual_element.find('div.listing-content p').text().trim(),
-                "poster": actual_element.find('img').attr('src'),
-                "type": actual_element.find("div.centrado").text().trim()
-            };
-            resolve(actual_data_json);
-        });
-    })
+//   $('div.app div.layout ul.TbVideoNv li').each((index , element) =>{
+//     const $element = $(element);
+//     const name = $element.find('a').text().trim();
+//     serverNames.push(name);
+//   })
+  
+//   Array.from({length: scripts.length} , (v , k) =>{
+//     const $script = $(scripts[k]);
+//     const contents = $script.html();
 
-
-    return Promise.all(promise_array);
-
-}
+//     if((contents || '').includes('var video = ')) {
+//       let allScript = contents.split('video =  ');
+//       allScript.map(x =>{
+//         let tempUrlList = urlify(x);
+//         let urlListFixed = tempUrlList.map(x =>{
+//           return x.replace(/[;"]/g , '');
+//         });
+//         servers.push(urlListFixed);
+//       });
+//     }
+//   });
 
 
 // export const seriesByGenres = async(genre: string, page: number): Promise<CheerioElement[]> =>{
@@ -513,35 +514,7 @@ export async function newSearch(title) {
 //   return Promise.all(promises);
 // }
 
-// export const getMovieServers = async(id: string): Promise<IServers[]> =>{
-//   const res = await axios.get(`${BASE_URL}${id}`);
-//   const body = await res.data;
-//   const $ = load(body);
-//   const scripts = $('script');
-//   const servers = [];
-//   const serverNames = [];
 
-//   $('div.app div.layout ul.TbVideoNv li').each((index , element) =>{
-//     const $element = $(element);
-//     const name = $element.find('a').text().trim();
-//     serverNames.push(name);
-//   })
-  
-//   Array.from({length: scripts.length} , (v , k) =>{
-//     const $script = $(scripts[k]);
-//     const contents = $script.html();
-
-//     if((contents || '').includes('var video = ')) {
-//       let allScript = contents.split('video =  ');
-//       allScript.map(x =>{
-//         let tempUrlList = urlify(x);
-//         let urlListFixed = tempUrlList.map(x =>{
-//           return x.replace(/[;"]/g , '');
-//         });
-//         servers.push(urlListFixed);
-//       });
-//     }
-//   });
 
 //   const serverList: IServers[] = [];
 //   Array.from({length: serverNames.length} , (v , k) =>{
