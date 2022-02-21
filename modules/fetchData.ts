@@ -1,7 +1,7 @@
 import {load} from 'cheerio';
 import axios from 'axios';
-import { ISeries } from '../interfaces/series_interface';
-import { IMovies } from '../interfaces/movies_interface';
+// import { ISeries } from '../interfaces/series_interface';
+// import { IMovies } from '../interfaces/movies_interface';
 // import { IServers } from './interfaces/IServers';
 // import { ISerieServerRootObj } from './interfaces/ISerieServerRootObj';
 // import { urlify, sleep} from './utils/index';
@@ -10,22 +10,17 @@ import { IMovies } from '../interfaces/movies_interface';
 const BASE_URL: string = "https://pelisplushd.net/";
 const URL_BASE:string = "https://pelisplushd.net";
 
-interface minimalMediaData {
-    id: string,
-    title: string,
-    type: []
+interface minimalMediaData { id: string, title: string, poster: string, type: "Serie" | "Película" | "Anime" }
 
-}
-
-async function extraContent(id: string) {
-    const page_fetch = await axios.get(URL_BASE + "/" + id);
-    const $ = load(await page_fetch.data)
-    const tempPromises = [];
-    const promises = [];
+// async function extraContent(id: string) {
+//     const page_fetch = await axios.get(URL_BASE + "/" + id);
+//     const $ = load(await page_fetch.data)
+//     const tempPromises = [];
+//     const promises = [];
   
-    const seasons = $('body div ul.TbVideoNv li.presentation').length;
+//     const seasons = $('body div ul.TbVideoNv li.presentation').length;
     
-}
+// }
 // const contentHandler = async(id: string) =>{
 //     const res = await axios.get(`${BASE_URL}${id}`);
 //     const body = await res.data;
@@ -97,17 +92,15 @@ async function extraContent(id: string) {
 export async function newSearch(title: string) {
     const page_fetch = await axios.get(URL_BASE + "/search/?s=" + title);
     const $ = load(await page_fetch.data);
-    // const union: (ISeries | IMovies)[] = [];
-    // const union = [];
 
     const promise_array = $("body div#default-tab-1 div.Posters a").map((index, element) => {
         return new Promise(async function(resolve, reject){
             const actual_element = $(element);
-            const actual_data_json = {
-                "id": actual_element.attr("href").replace(BASE_URL, '').trim() || null,
-                "title": actual_element.find('div.listing-content p').text().trim() || null,
-                "poster": actual_element.find('img').attr('src') || null,
-                "type": actual_element.find("div.centrado").text().trim() || null
+            const actual_data_json:minimalMediaData = {
+                "id": actual_element.attr("href").replace(BASE_URL, '').trim(),
+                "title": actual_element.find('div.listing-content p').text().trim(),
+                "poster": actual_element.find('img').attr('src'),
+                "type": actual_element.find("div.centrado").text().trim()
             };
             resolve(actual_data_json);
         });
@@ -118,39 +111,6 @@ export async function newSearch(title: string) {
 
 }
 
-export const search = async(query: string) =>{
-  const res = await axios.get(`${BASE_URL}search/?s=${query}`);
-  const body = await res.data;
-  const $ = load(body);
-  const union: (ISeries | IMovies)[] = [];
-
-  const promise = $('body div#default-tab-1 div.Posters a').map((index , element) => new Promise(async(resolve) =>{
-    const $element = $(element);
-    const id = $element.attr('href').replace(BASE_URL, '').trim();
-    const title = $element.find('div.listing-content p').text().trim();
-    const poster = $element.find('img').attr('src');
-    const extra = await contentHandler(id)
-      union.push({
-        id: id || null,
-        title: title || null,
-        poster: poster || null,
-        year: extra.promises[0].year || null,
-        seasons: extra.seasons || null,
-        genres: extra.promises[0].genres || null,
-        rating: extra.promises[0].rating || null,
-        synopsis: extra.promises[0].synopsis || null,
-        authors: extra.promises[0].authors || null,
-        director: extra.promises[0].director || null,
-        writers: extra.promises[0].writers || null,
-        country: extra.promises[0].country || null,
-        releaseDate: extra.promises[0].releaseDate || null,
-        promo: extra.promises[0].promo || null
-    });    
-    resolve(union);
-  }));
-  
-  return Promise.all(promise.toArray());
-}
 
 // export const seriesByGenres = async(genre: string, page: number): Promise<CheerioElement[]> =>{
 //   const res = await axios.get(`${BASE_URL}series/generos/${genre}/${page}`);
@@ -450,72 +410,72 @@ export const search = async(query: string) =>{
 //   return Promise.all(promises);
 // }
 
-const contentHandler = async(id: string) =>{
-  const res = await axios.get(`${BASE_URL}${id}`);
-  const body = await res.data;
-  const $ = load(body);
-  const tempPromises = [];
-  const promises = [];
+// const contentHandler = async(id: string) =>{
+//   const res = await axios.get(`${BASE_URL}${id}`);
+//   const body = await res.data;
+//   const $ = load(body);
+//   const tempPromises = [];
+//   const promises = [];
 
-  const seasons = $('body div ul.TbVideoNv li.presentation').length;
+//   const seasons = $('body div ul.TbVideoNv li.presentation').length;
 
-  $('body div div div.page-container div.main-content div.container-fluid div.card div.card-body div.row.m-v-30 div.col-sm-4').eq(0).each((index , element) =>{
-    const $element = $(element);
-    const synopsis = $element.find('div.text-large').text().trim();
-    const actors = [];
-    $element.find('div.sectionDetail.mb15').eq(0).find('a').each((j , el) =>{
-      const $el = $(el);
-      const name = $el.text();
-      actors.push(name)
-    });
-    const director = $element.find('div.sectionDetail.mb15').eq(1).find('a').text().trim();  
-    const writers = [];
-    $element.find('div.sectionDetail.mb15').eq(2).find('a').each((j , el) =>{
-      const $el = $(el);
-      const name = $el.text();
-      writers.push(name)
-    });
-    const country =  $element.find('div.sectionDetail.mb15').eq(3).find('a').text().trim();
-    const tempReleaseDate = $element.find('div.sectionDetail.mb15').eq(4).text().trim();
-    const releaseDate = tempReleaseDate.substring(tempReleaseDate.lastIndexOf(':') + 1);
+//   $('body div div div.page-container div.main-content div.container-fluid div.card div.card-body div.row.m-v-30 div.col-sm-4').eq(0).each((index , element) =>{
+//     const $element = $(element);
+//     const synopsis = $element.find('div.text-large').text().trim();
+//     const actors = [];
+//     $element.find('div.sectionDetail.mb15').eq(0).find('a').each((j , el) =>{
+//       const $el = $(el);
+//       const name = $el.text();
+//       actors.push(name)
+//     });
+//     const director = $element.find('div.sectionDetail.mb15').eq(1).find('a').text().trim();  
+//     const writers = [];
+//     $element.find('div.sectionDetail.mb15').eq(2).find('a').each((j , el) =>{
+//       const $el = $(el);
+//       const name = $el.text();
+//       writers.push(name)
+//     });
+//     const country =  $element.find('div.sectionDetail.mb15').eq(3).find('a').text().trim();
+//     const tempReleaseDate = $element.find('div.sectionDetail.mb15').eq(4).text().trim();
+//     const releaseDate = tempReleaseDate.substring(tempReleaseDate.lastIndexOf(':') + 1);
     
-    tempPromises.push({
-      synopsis: synopsis,
-      authors: actors,
-      director: director,
-      writers: writers,
-      country: country,
-      releaseDate: releaseDate,
-    });
+//     tempPromises.push({
+//       synopsis: synopsis,
+//       authors: actors,
+//       director: director,
+//       writers: writers,
+//       country: country,
+//       releaseDate: releaseDate,
+//     });
 
-  });
-  const year = parseInt($('body div div div.page-container div.main-content div.container-fluid div.card div.card-body div.row.m-v-30 div.col-sm-4 div.d-flex.flex-row div.p-v-20').eq(0).find('span').text().trim() , 10);
-  const genres = [];
-  $('body div div div.page-container div.main-content div.container-fluid div.card div.card-body div.row.m-v-30 div.col-sm-4 div.d-flex.flex-row div.p-v-20').eq(1).find('a').each((j , el) =>{
-    const $el = $(el);
-    const genre = $el.find('span').text().trim();
-    genres.push(genre);
-  });
-  const rating = parseFloat($('body div div div.page-container div.main-content div.container-fluid div.card div.card-body div.row.m-v-30 div.col-sm-4 div.d-flex.flex-row div.p-v-20').eq(2).find('span').text().trim().split('/')[0]);
-  const promo = $('body div.app div.layout div.page-container div.main-content div.modal iframe').attr('src');
+//   });
+//   const year = parseInt($('body div div div.page-container div.main-content div.container-fluid div.card div.card-body div.row.m-v-30 div.col-sm-4 div.d-flex.flex-row div.p-v-20').eq(0).find('span').text().trim() , 10);
+//   const genres = [];
+//   $('body div div div.page-container div.main-content div.container-fluid div.card div.card-body div.row.m-v-30 div.col-sm-4 div.d-flex.flex-row div.p-v-20').eq(1).find('a').each((j , el) =>{
+//     const $el = $(el);
+//     const genre = $el.find('span').text().trim();
+//     genres.push(genre);
+//   });
+//   const rating = parseFloat($('body div div div.page-container div.main-content div.container-fluid div.card div.card-body div.row.m-v-30 div.col-sm-4 div.d-flex.flex-row div.p-v-20').eq(2).find('span').text().trim().split('/')[0]);
+//   const promo = $('body div.app div.layout div.page-container div.main-content div.modal iframe').attr('src');
 
-  tempPromises.map(doc =>{
-    promises.push({
-      year: year,
-      genres: genres,
-      rating: rating,
-      synopsis: doc.synopsis,
-      authors: doc.authors,
-      director: doc.director,
-      writers: doc.writers,
-      country: doc.country,
-      releaseDate: doc.releaseDate,
-      promo: promo
-    });
-  });
+//   tempPromises.map(doc =>{
+//     promises.push({
+//       year: year,
+//       genres: genres,
+//       rating: rating,
+//       synopsis: doc.synopsis,
+//       authors: doc.authors,
+//       director: doc.director,
+//       writers: doc.writers,
+//       country: doc.country,
+//       releaseDate: doc.releaseDate,
+//       promo: promo
+//     });
+//   });
   
-  return {promises , seasons};
-};
+//   return {promises , seasons};
+// };
 
 // export const getSeriesServersBySeason = async(id: string , season: number): Promise<ISerieServerRootObj[]> =>{
 //   const res = await axios.get(`${BASE_URL}${id}`);
