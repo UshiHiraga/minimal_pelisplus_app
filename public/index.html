@@ -5,11 +5,14 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- <script src="https://unpkg.com/vue@3.2.31/dist/vue.global.prod.js"></script>-->
-    <script src="https://unpkg.com/vue@3"></script>
-    <script src="./index.js" defer></script>
-    <link rel="stylesheet" href="./styles/page_index.min.css">
     <title>Minimal Pelisplushd</title>
+
+    <!-- <script src="https://unpkg.com/vue@3.2.31/dist/vue.global.prod.js"></script>-->
+    <script src="https://unpkg.com/vue@3.2.31/dist/vue.global.js"></script>
+
+    <link rel="stylesheet" href="./styles/icons.min.css">
+    <link rel="stylesheet" href="./styles/page_index.min.css">
+    <script src="./index.js" defer></script>
 </head>
 
 <body id="main_app">
@@ -21,33 +24,31 @@
                 <button @click="search">Buscar</button>
             </div>
         </div>
-
     </section>
 
     <section class="big_content">
         <section class="information_container" v-show="isSearching">Cargando...</section>
         <section class="card_container" id="card_container">
-            <div class="basic_data_card" :class="search.type" v-for="search in lastSearchData" :key="search.id">
-                <img v-on="(search.type == 'Película') ? {click: () => getMovieServers(search.id)} : {} "
-                    :src="search.poster" alt="">
+            <div tabindex="1" class="basic_data_card" :class="search.type"
+            v-for="search in lastSearchData" :key="search.id"
+            v-on="(search.type == 'Película') ? {click: () => getMovieServers(search.id)} : {}">
+                <img :src="search.poster">
                 <p>{{search.title}}</p>
             </div>
         </section>
     </section>
 
-    <enhanced-dialog id="result_dialog" can-close title="Resultado" position="above">
+    <enhanced-dialog ref="movies_server_dialog" id="result_dialog" title="Servidores disponibles" position="below" can-close>
         <template #body_content>
             <section class="links_container">
                 <div v-for="video_server in currentMovieServer">
-                    <button @click="loadMovieVideo(video_server.url)">{{video_server.name}}</button>
-                    <a :href="video_server.url" target="_blank">Cargar en otra pestaña</a>
+                    <a class="i" :href="video_server.url" target="_blank">open_in_new</a>
+                    <button @click="this.actualVideoServer = video_server.url">{{video_server.name}}</button>
                 </div>
             </section>
             <section class="iframe_container">
-                <iframe ref="video_iframe" :src="actualVideoServer" frameborder="0"></iframe>
+                <iframe allow="fullscreen" ref="video_iframe" :src="actualVideoServer" frameborder="0"></iframe>
             </section>
- 
-
         </template>
     </enhanced-dialog>
 

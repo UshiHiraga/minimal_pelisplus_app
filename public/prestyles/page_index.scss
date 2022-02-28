@@ -24,7 +24,7 @@
     margin: auto;
     padding: 5px;
     border-radius: 10px;
-    width: var(--dialog_enhanced_max_width, 80%);
+    width: var(--dialog_enhanced_max_width, 90%);
     background-color: var(--dialog_enhanced_bg_color, rgb(255, 255, 255));
     color: var(--dialog_enhanced_text_color, rgb(0, 0, 0));
 
@@ -58,6 +58,7 @@
         padding-bottom: 5px;
         p{
             width: 100%;
+            font-weight: bold;
             border-right: solid 2px var(--dialog_enhanced_text_color, rgb(0, 0, 0));
         }
 
@@ -68,9 +69,13 @@
             background-color: transparent;
             cursor: pointer;
             margin: 0px 5px;
+            background-color: black;
+            color: white;
 
             &.disabled {
                 border-color: gray;
+                background-color: gray;
+                color: white;
                 cursor: not-allowed;
             }
         }
@@ -81,7 +86,9 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    padding-bottom: 1rem;
     .links_container {
+        width: 25%;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -89,8 +96,40 @@
 
         div{
             display: flex;
+            width: 100%;
+            padding: 5px 0px;
+            justify-content: flex-start;
+            align-items: center;
+            button {
+                color: #000;
+                border: solid 2px black;
+                cursor: pointer;
+                width: 100%;
+                padding: 0px 5px;
+                border-radius: 10px;
+                background-color: #fff;
+            }
+            a {
+                font-size: 1rem;
+                padding: 0px 5px;
+                text-decoration: none;
+            }
         }
     }
+
+    .iframe_container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        iframe {
+            width: 90%;
+            aspect-ratio: 16/9;
+        }
+    }
+
+
 }
 
 body {
@@ -125,7 +164,7 @@ body {
 
         label{
             text-align: start;
-            font-size: 0.3rem;
+            font-size: 0.5rem;
             width: 100%;
             padding-bottom: 10px;
         }
@@ -149,7 +188,6 @@ body {
                 border: none;
                 border-radius: 10px;
                 padding: 6px 12px;
-                // outline: none;
                 background-color: #fff;
                 margin-left: 20px;
             }
@@ -164,7 +202,7 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 2rem;
+    padding: 1rem;
 
 
     .information_container {
@@ -178,6 +216,7 @@ body {
         text-align: center;
         vertical-align: center;
         padding: 10px 0px;
+        margin: 10px 0px;
         border-radius: 10px;
     }
 

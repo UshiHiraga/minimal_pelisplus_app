@@ -8,6 +8,7 @@ const app = Vue.createApp({
                 "position": { type: String, required: true, validator(value) { return ["above", "below"].includes(value) } }
             },
             methods: {
+                openDialog() { this.$refs["main_dialog"].showModal() },
                 closeDialog() { this.$refs["main_dialog"].close() }
             },
             template: /*html*/ `
@@ -15,12 +16,9 @@ const app = Vue.createApp({
                 <section class="title_container">
                     <p>{{title}}</p>
                     <slot name="external_button"></slot>
-                    <button
-                        class="i main_button" 
-                        :title="(canClose) ? 'Presiona para cerrar' : null"
-                        :class="(canClose) ? null : 'disabled' "
-                        v-on="(canClose) ? { click: closeDialog } : {}"
-                    >x</button>
+                    <button class="i main_button" :title="(canClose) ? 'Presiona para cerrar' : null"
+                        :class="(canClose) ? null : 'disabled' " v-on="(canClose) ? { click: closeDialog } : {}">
+                    close</button>
                 </section>
                 <section class="body_container">
                     <slot name="body_content"></slot>
@@ -28,7 +26,7 @@ const app = Vue.createApp({
             </dialog>`,
         }
     },
-    data(){
+    data() {
         return {
             "currentTitle": "",
             "lastSearchData": [],
@@ -38,28 +36,23 @@ const app = Vue.createApp({
         }
     },
     methods: {
-        async search(){
-            const title_search = this.currentTitle.trim();
-            if(!title_search) throw new Error("Title to search is void.");
-
+        async resquestMoviesToApi(textToSearch) { return (await (await fetch("/api/searchByName?title=" + textToSearch)).json()) },
+        async resquestMovieServersToApi(movieId) { return (await (await fetch("/api/getMovieServers?id=" + movieId)).json()) },
+        toggleLoadingBanner() { this.isSearching = !this.isSearching },
+        async search() {
+            const currentTitle = this.currentTitle.trim();
+            if (!currentTitle) throw new Error("Title to search is void.");
             this.lastSearchData = [];
-            this.isSearching = true;
-            let a = await fetch(MAIN_SERVER + "/api/searchByName?title=" + title_search);
-            let b = await a.json();
-            this.isSearching = false;
-            this.lastSearchData = b;
+            this.toggleLoadingBanner();
+            this.lastSearchData = await this.resquestMoviesToApi(currentTitle);
+            this.toggleLoadingBanner();
         },
-        async getMovieServers(id){
-            let a = await fetch(MAIN_SERVER + "/api/getMovieServers?id=" + id);
-            let b = await a.json();
-            console.log(b);
-
-            this.currentMovieServer = b;
-            document.getElementById("result_dialog").showModal();
-        },
-        loadMovieVideo(server_url){
-            this.actualVideoServer = server_url;
-            this.$refs["video_iframe"].requestFullscreen();
+        async getMovieServers(id) {
+            this.currentMovieServer = [];
+            this.toggleLoadingBanner();
+            this.currentMovieServer = await this.resquestMovieServersToApi(id);
+            this.toggleLoadingBanner();
+            this.$refs["movies_server_dialog"].openDialog();
         }
     }
 })
