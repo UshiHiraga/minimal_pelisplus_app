@@ -1,40 +1,67 @@
-// const MAIN_SERVER = "http://localhost:5500";
-const MAIN_SERVER = "";
+const app = Vue.createApp({
+    components: {
+        enhancedDialog: {
+            props: {
+                "title": { type: String, required: true },
+                "isOpened": { type: Boolean, default: false },
+                "canClose": { type: Boolean, default: false },
+                "position": { type: String, required: true, validator(value) { return ["above", "below"].includes(value) } }
+            },
+            methods: {
+                closeDialog() { this.$refs["main_dialog"].close() }
+            },
+            template: /*html*/ `
+            <dialog ref="main_dialog" class="dialog_enhanced" :class="position">
+                <section class="title_container">
+                    <p>{{title}}</p>
+                    <slot name="external_button"></slot>
+                    <button
+                        class="i main_button" 
+                        :title="(canClose) ? 'Presiona para cerrar' : null"
+                        :class="(canClose) ? null : 'disabled' "
+                        v-on="(canClose) ? { click: closeDialog } : {}"
+                    >x</button>
+                </section>
+                <section class="body_container">
+                    <slot name="body_content"></slot>
+                </section>
+            </dialog>`,
+        }
+    },
+    data(){
+        return {
+            "currentTitle": "",
+            "lastSearchData": [],
+            "currentMovieServer": [],
+            "isSearching": false,
+            "actualVideoServer": ""
+        }
+    },
+    methods: {
+        async search(){
+            const title_search = this.currentTitle.trim();
+            if(!title_search) throw new Error("Title to search is void.");
 
-async function searchAndDisplay(){
-    const title_search = document.getElementById("title_movie_search").value.trim();
-    if(!title_search) throw new Error("Title to search is void.");
+            this.lastSearchData = [];
+            this.isSearching = true;
+            let a = await fetch(MAIN_SERVER + "/api/searchByName?title=" + title_search);
+            let b = await a.json();
+            this.isSearching = false;
+            this.lastSearchData = b;
+        },
+        async getMovieServers(id){
+            let a = await fetch(MAIN_SERVER + "/api/getMovieServers?id=" + id);
+            let b = await a.json();
+            console.log(b);
 
- 
-    let a = await fetch(MAIN_SERVER + "/api/searchByName?title=" + title_search);
-    let b = await a.json();
+            this.currentMovieServer = b;
+            document.getElementById("result_dialog").showModal();
+        },
+        loadMovieVideo(server_url){
+            this.actualVideoServer = server_url;
+            this.$refs["video_iframe"].requestFullscreen();
+        }
+    }
+})
 
-    let card_container = document.getElementById("card_container");
-    console.log(b);
-    b.forEach((e) => card_container.appendChild(createBasicDataCard(e)));
-}
-
-function createBasicDataCard(data){
-    let container = document.createElement("div");
-    container.setAttribute("movie_id", data.id);
-    container.setAttribute("tabindex", "2");
-    container.addEventListener("click", () => alert("S"));
-    container.classList.add("basic_data_card", data.type)
-    let image = document.createElement("img");
-    image.setAttribute("src", data.poster);
-    let text = document.createElement("p");
-    text.innerText = data.title;
-
-    container.appendChild(image);
-    container.appendChild(text);
-
-
-    let hidden = document.createElement("div");
-    hidden.classList.add("hidden_card");
-    text = document.createElement("p");
-    text.innerText = "Presione para cargar."
-    container.appendChild(hidden);
-    return container;
-};
-
-document.getElementById("searchMoviesByName").addEventListener("click", searchAndDisplay);
+app.mount("#main_app");

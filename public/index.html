@@ -1,24 +1,56 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <script src="https://unpkg.com/vue@3.2.31/dist/vue.global.prod.js"></script>-->
+    <script src="https://unpkg.com/vue@3"></script>
     <script src="./index.js" defer></script>
     <link rel="stylesheet" href="./styles/page_index.min.css">
     <title>Minimal Pelisplushd</title>
 </head>
-<body>
 
+<body id="main_app">
     <section class="big_header">
-        <label for="title_movie_search">Buscar película por nombre:</label>
-        <input name="title" type="text" id="title_movie_search">
-        <button id="searchMoviesByName"type="submit">Enviar</button>
+        <div class="search_widget">
+            <label for="title_movie_search">Nombre de la película:</label>
+            <div>
+                <input @change="search" type="text" v-model="currentTitle">
+                <button @click="search">Buscar</button>
+            </div>
+        </div>
+
     </section>
 
-    <section id="card_container" class="big_content">
+    <section class="big_content">
+        <section class="information_container" v-show="isSearching">Cargando...</section>
+        <section class="card_container" id="card_container">
+            <div class="basic_data_card" :class="search.type" v-for="search in lastSearchData" :key="search.id">
+                <img v-on="(search.type == 'Película') ? {click: () => getMovieServers(search.id)} : {} "
+                    :src="search.poster" alt="">
+                <p>{{search.title}}</p>
+            </div>
+        </section>
     </section>
 
+    <enhanced-dialog id="result_dialog" can-close title="Resultado" position="above">
+        <template #body_content>
+            <section class="links_container">
+                <div v-for="video_server in currentMovieServer">
+                    <button @click="loadMovieVideo(video_server.url)">{{video_server.name}}</button>
+                    <a :href="video_server.url" target="_blank">Cargar en otra pestaña</a>
+                </div>
+            </section>
+            <section class="iframe_container">
+                <iframe ref="video_iframe" :src="actualVideoServer" frameborder="0"></iframe>
+            </section>
+ 
+
+        </template>
+    </enhanced-dialog>
 
 </body>
+
 </html>
