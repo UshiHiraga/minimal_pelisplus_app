@@ -1,1 +1,1 @@
-export const url_base = "https://pelisplushd.nu";
+export const url_base = "https://www1.pelisplushd.nu";

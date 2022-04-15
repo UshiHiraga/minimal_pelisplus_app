@@ -57,4 +57,4 @@ const app = Vue.createApp({
     }
 })
 
-app.mount("#main_app");
+window.app_data	 = app.mount("#main_app");
